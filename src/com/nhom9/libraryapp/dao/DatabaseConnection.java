@@ -12,7 +12,7 @@ public class DatabaseConnection {
     // --- THAY ĐỔI CÁC THÔNG TIN NÀY CHO PHÙ HỢP ---
     private static final String DB_URL = "jdbc:mysql://localhost:3306/db_thu_vien?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"; // Thay đổi host, port, tên db nếu cần
     private static final String DB_USER = "root"; // Thay bằng username của bạn
-    private static final String DB_PASSWORD = "15082003Aa"; // Thay bằng mật khẩu của bạn
+    private static final String DB_PASSWORD =""; // Thay bằng mật khẩu của bạn
     // --- KẾT THÚC PHẦN THAY ĐỔI ---
 
     // Tải driver MySQL một lần khi lớp được nạp
