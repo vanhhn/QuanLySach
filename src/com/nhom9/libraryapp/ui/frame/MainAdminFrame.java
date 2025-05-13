@@ -1,6 +1,7 @@
 package com.nhom9.libraryapp.ui.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,103 +12,145 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.nhom9.libraryapp.model.User;
-// Import các panel
 import com.nhom9.libraryapp.ui.panel.BookManagementPanel;
 import com.nhom9.libraryapp.ui.panel.BookSearchPanel;
 import com.nhom9.libraryapp.ui.panel.BorrowHistoryPanel;
 import com.nhom9.libraryapp.ui.panel.BorrowedBooksPanel;
 import com.nhom9.libraryapp.ui.panel.StatisticsPanel;
 import com.nhom9.libraryapp.ui.panel.UserManagementPanel;
+import com.nhom9.libraryapp.util.UIUtil;
 
-/**
- * Khung giao diện chính cho Quản trị viên (Admin).
- */
 @SuppressWarnings("serial")
 public class MainAdminFrame extends JFrame {
 
-	private User currentAdmin; // Lưu thông tin admin đang đăng nhập
-	private JTabbedPane tabbedPane;
-	private JButton btnLogout;
+    private User currentAdmin;
+    private JTabbedPane tabbedPane;
+    private JButton btnLogout;
 
-	public MainAdminFrame(User adminUser) {
-		if (!"admin".equalsIgnoreCase(adminUser.getVaiTro())) {
-			// Biện pháp phòng ngừa nếu user thường cố tình vào frame admin
-			throw new IllegalArgumentException("User is not an admin.");
-		}
-		this.currentAdmin = adminUser;
+    private BookManagementPanel bookManagementPanel;
+    private UserManagementPanel userManagementPanel;
+    private BookSearchPanel searchBorrowPanel;
+    private BorrowedBooksPanel borrowedPanel;
+    private BorrowHistoryPanel historyPanel;
+    private StatisticsPanel statisticsPanel;
 
-		setTitle("Hệ thống Quản lý Thư viện [ADMIN] - Xin chào, " + currentAdmin.getHoTen());
-		setSize(900, 700); // Có thể lớn hơn frame user
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+    public MainAdminFrame(User adminUser) {
+        if (!"admin".equalsIgnoreCase(adminUser.getVaiTro())) {
+            throw new IllegalArgumentException("User is not an admin.");
+        }
+        this.currentAdmin = adminUser;
 
-		initComponents();
-		addEventListeners();
-	}
+        setTitle("Hệ thống Quản lý Thư viện [ADMIN] - Xin chào, " + currentAdmin.getHoTen());
+        setSize(900, 700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        UIUtil.setFrameIcon(this, "/icons/book.png", MainAdminFrame.class); // Sử dụng MainAdminFrame.class
 
-	private void initComponents() {
-		JPanel mainPanel = new JPanel(new BorderLayout());
-		tabbedPane = new JTabbedPane();
+        initComponents();
+        addEventListeners();
+        addTabChangeListener();
+    }
 
-		// Tạo các Panel chức năng (cần được implement đầy đủ)
-		// Placeholder Panels:
-		JPanel bookManagementPanel = new BookManagementPanel(); // Ví dụ panel quản lý sách
-		JPanel userManagementPanel = new UserManagementPanel(); // Ví dụ panel quản lý người dùng
-		JPanel searchBorrowPanel = new BookSearchPanel(currentAdmin); // Admin cũng có thể tìm/mượn
-		JPanel borrowedPanel = new BorrowedBooksPanel(currentAdmin); // Admin cũng có thể xem sách đang mượn (của mình)
-		JPanel historyPanel = new BorrowHistoryPanel(currentAdmin); // Admin cũng có thể xem lịch sử (của mình)
-		JPanel statisticsPanel = new StatisticsPanel(); // Ví dụ panel thống kê
+    private void initComponents() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        tabbedPane = new JTabbedPane();
 
-		// Thêm các tab cho Admin
-		tabbedPane.addTab("Quản Lý Sách", null, bookManagementPanel, "Thêm, sửa, xóa sách");
-		tabbedPane.addTab("Quản Lý Người Dùng", null, userManagementPanel, "Quản lý tài khoản người dùng");
-		tabbedPane.addTab("Tìm & Mượn Sách", null, searchBorrowPanel, "Tìm kiếm và mượn sách");
-		tabbedPane.addTab("Sách Đang Mượn", null, borrowedPanel, "Xem và trả sách đang mượn");
-		tabbedPane.addTab("Lịch Sử Mượn", null, historyPanel, "Xem lịch sử mượn trả sách");
-		tabbedPane.addTab("Thống Kê", null, statisticsPanel, "Xem thống kê thư viện");
+        // Khởi tạo các Panel
+        bookManagementPanel = new BookManagementPanel(); // Admin không cần truyền User vào đây
+        userManagementPanel = new UserManagementPanel(); // Admin không cần truyền User (trừ khi UserManagementPanel cần biết currentAdmin)
+        searchBorrowPanel = new BookSearchPanel(currentAdmin); // Admin mượn sách cho chính mình
+        borrowedPanel = new BorrowedBooksPanel(currentAdmin);   // Admin xem sách mình đang mượn
+        historyPanel = new BorrowHistoryPanel(currentAdmin);    // Admin xem lịch sử mượn của mình
+        statisticsPanel = new StatisticsPanel();              // Panel thống kê
 
-		mainPanel.add(tabbedPane, BorderLayout.CENTER);
+        // Thêm các tab
+        tabbedPane.addTab("Quản Lý Sách", null, bookManagementPanel, "Thêm, sửa, xóa sách");
+        tabbedPane.addTab("Quản Lý Người Dùng", null, userManagementPanel, "Quản lý tài khoản người dùng");
+        tabbedPane.addTab("Tìm & Mượn Sách", null, searchBorrowPanel, "Tìm kiếm và mượn sách");
+        tabbedPane.addTab("Sách Đang Mượn", null, borrowedPanel, "Xem và trả sách đang mượn");
+        tabbedPane.addTab("Lịch Sử Mượn", null, historyPanel, "Xem lịch sử mượn trả sách");
+        tabbedPane.addTab("Thống Kê", null, statisticsPanel, "Xem thống kê thư viện");
 
-		// Panel dưới cùng chứa nút Logout
-		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		btnLogout = new JButton("Đăng xuất");
-		bottomPanel.add(btnLogout);
+        mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
-		mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        btnLogout = new JButton("Đăng xuất");
+        bottomPanel.add(btnLogout);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+        add(mainPanel);
+    }
 
-		add(mainPanel);
-	}
+    private void addEventListeners() {
+        btnLogout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(MainAdminFrame.this, "Bạn có chắc chắn muốn đăng xuất?",
+                        "Xác nhận Đăng xuất", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    dispose();
+                    SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
+                }
+            }
+        });
+    }
 
-	private void addEventListeners() {
-		btnLogout.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int confirm = JOptionPane.showConfirmDialog(MainAdminFrame.this, "Bạn có chắc chắn muốn đăng xuất?",
-						"Xác nhận Đăng xuất", JOptionPane.YES_NO_OPTION);
+    private void addTabChangeListener() {
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                Component selectedComponent = tabbedPane.getSelectedComponent();
 
-				if (confirm == JOptionPane.YES_OPTION) {
-					dispose(); // Đóng cửa sổ hiện tại
-					// Mở lại cửa sổ đăng nhập
-					SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
-				}
-			}
-		});
-	}
+                if (selectedComponent == borrowedPanel && borrowedPanel != null) {
+                    System.out.println("Admin Tab: Sách Đang Mượn selected, reloading data...");
+                    borrowedPanel.loadBorrowedBooks();
+                } else if (selectedComponent == historyPanel && historyPanel != null) {
+                    System.out.println("Admin Tab: Lịch Sử Mượn selected, reloading data...");
+                    historyPanel.loadHistory();
+                } else if (selectedComponent == searchBorrowPanel && searchBorrowPanel != null) {
+                    System.out.println("Admin Tab: Tìm & Mượn Sách selected, reloading data...");
+                    searchBorrowPanel.refreshBookListView(); // Gọi phương thức public
+                } else if (selectedComponent == bookManagementPanel && bookManagementPanel != null) {
+                    System.out.println("Admin Tab: Quản Lý Sách selected, reloading data...");
+                    bookManagementPanel.loadAllBooks(); // Gọi phương thức public
+                } else if (selectedComponent == userManagementPanel && userManagementPanel != null) {
+                    System.out.println("Admin Tab: Quản Lý Người Dùng selected, reloading data...");
+                    userManagementPanel.loadAllUsers(); // Đảm bảo phương thức này public
+                } else if (selectedComponent == statisticsPanel && statisticsPanel != null) {
+                    System.out.println("Admin Tab: Thống Kê selected, reloading data...");
+                    // statisticsPanel.loadStatistics(); // Nếu StatisticsPanel có phương thức public để tải lại
+                }
+            }
+        });
+    }
 
-	// // Phương thức main để chạy thử nghiệm Frame này
-	// public static void main(String[] args) {
-	// SwingUtilities.invokeLater(new Runnable() {
-	// public void run() {
-	// // Tạo một User admin giả để test
-	// User testAdmin = new User();
-	// testAdmin.setId(99);
-	// testAdmin.setHoTen("Quản Trị Viên");
-	// testAdmin.setVaiTro("admin");
-	//
-	// new MainAdminFrame(testAdmin).setVisible(true);
-	// }
-	// });
-	// }
+    public void refreshBookSearchPanelData() {
+        if (searchBorrowPanel != null) {
+            System.out.println("MainAdminFrame: Requesting refresh for BookSearchPanel...");
+            searchBorrowPanel.refreshBookListView();
+        }
+    }
+
+    public void refreshBookManagementPanelData() {
+        if (bookManagementPanel != null) {
+            System.out.println("MainAdminFrame: Requesting refresh for BookManagementPanel...");
+            bookManagementPanel.loadAllBooks();
+        }
+    }
+
+    public void refreshBorrowedBooksPanelData() {
+        if (borrowedPanel != null) {
+             System.out.println("MainAdminFrame: Requesting refresh for BorrowedBooksPanel...");
+            borrowedPanel.loadBorrowedBooks();
+        }
+    }
+
+     public void refreshBorrowHistoryPanelData() {
+        if (historyPanel != null) {
+             System.out.println("MainAdminFrame: Requesting refresh for BorrowHistoryPanel...");
+            historyPanel.loadHistory();
+        }
+    }
 }

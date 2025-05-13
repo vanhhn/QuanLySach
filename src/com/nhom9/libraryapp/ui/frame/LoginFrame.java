@@ -1,7 +1,5 @@
 package com.nhom9.libraryapp.ui.frame;
 
-
-
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,6 +19,7 @@ import javax.swing.SwingUtilities;
 
 import com.nhom9.libraryapp.model.User;
 import com.nhom9.libraryapp.service.AuthService;
+import com.nhom9.libraryapp.util.UIUtil;
 
 /**
  * Khung giao diện Đăng nhập.
@@ -40,7 +38,7 @@ public class LoginFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Thoát ứng dụng khi đóng cửa sổ này
         setLocationRelativeTo(null); // Hiển thị cửa sổ ở giữa màn hình
         setResizable(false); // Không cho phép thay đổi kích thước
-
+        UIUtil.setFrameIcon(this, "/icons/book.png", LoginFrame.class);
         initComponents();
         addEventListeners(); // Tách riêng phần xử lý sự kiện
     }
@@ -115,22 +113,24 @@ public class LoginFrame extends JFrame {
 
                 // --- Gọi lớp Service/DAO để kiểm tra đăng nhập ---
                 System.out.println("Attempting login with Username: " + username + ", Password: " + password);
-                 AuthService authService = new AuthService();
-                 User loggedInUser = authService.login(username, password);
-                 if (loggedInUser != null) {
+                AuthService authService = new AuthService();
+                User loggedInUser = authService.login(username, password);
+                if (loggedInUser != null) {
                     dispose(); // Đóng cửa sổ đăng nhập
                     if ("admin".equals(loggedInUser.getVaiTro())) {
                         new MainAdminFrame(loggedInUser).setVisible(true);
                     } else {
                         new MainUserFrame(loggedInUser).setVisible(true);
                     }
-                 } else {
-                    JOptionPane.showMessageDialog(LoginFrame.this, "Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi Đăng nhập", JOptionPane.ERROR_MESSAGE);
-                 }
-                 //----------------------------------------------------
+                } else {
+                    JOptionPane.showMessageDialog(LoginFrame.this, "Tên đăng nhập hoặc mật khẩu không đúng!",
+                            "Lỗi Đăng nhập", JOptionPane.ERROR_MESSAGE);
+                }
+                // ----------------------------------------------------
 
                 // Placeholder: Chỉ hiển thị thông báo tạm thời
-                 //JOptionPane.showMessageDialog(LoginFrame.this, "Chức năng Đăng nhập đang được phát triển.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                // JOptionPane.showMessageDialog(LoginFrame.this, "Chức năng Đăng nhập đang được
+                // phát triển.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 
             }
         });
@@ -139,19 +139,22 @@ public class LoginFrame extends JFrame {
         btnRegister.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 System.out.println("Register button clicked");
+                System.out.println("Register button clicked");
                 // Mở cửa sổ đăng ký
-                 RegisterFrame registerFrame = new RegisterFrame(LoginFrame.this); // Truyền frame hiện tại để có thể quay lại
-                 registerFrame.setVisible(true);
-                 // Có thể ẩn cửa sổ đăng nhập khi mở đăng ký:
-                 // setVisible(false);
+                RegisterFrame registerFrame = new RegisterFrame(LoginFrame.this); // Truyền frame hiện tại để có thể
+                                                                                  // quay lại
+                registerFrame.setVisible(true);
+                // Có thể ẩn cửa sổ đăng nhập khi mở đăng ký:
+                // setVisible(false);
             }
         });
     }
 
-    // Phương thức main để chạy thử nghiệm Frame này (có thể xóa hoặc comment lại sau)
+    // Phương thức main để chạy thử nghiệm Frame này (có thể xóa hoặc comment lại
+    // sau)
     public static void main(String[] args) {
-        // Đảm bảo rằng việc tạo và hiển thị GUI được thực hiện trên Event Dispatch Thread
+        // Đảm bảo rằng việc tạo và hiển thị GUI được thực hiện trên Event Dispatch
+        // Thread
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new LoginFrame().setVisible(true);

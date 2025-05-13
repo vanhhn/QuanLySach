@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 
 import com.nhom9.libraryapp.model.User;
 import com.nhom9.libraryapp.service.AuthService;
+import com.nhom9.libraryapp.util.UIUtil;
 
 /**
  * Khung giao diện Đăng ký tài khoản mới.
@@ -44,7 +45,7 @@ public class RegisterFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Chỉ đóng cửa sổ này, không thoát ứng dụng
         setLocationRelativeTo(parentFrame); // Hiển thị gần cửa sổ cha
         setResizable(false);
-
+        UIUtil.setFrameIcon(this, "/icons/book.png", LoginFrame.class);
         initComponents();
         addEventListeners();
 

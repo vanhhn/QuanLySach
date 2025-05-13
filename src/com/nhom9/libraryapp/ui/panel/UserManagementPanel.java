@@ -141,7 +141,7 @@ public class UserManagementPanel extends JPanel {
           btnDelete.setEnabled(canDelete);
      }
 
-    private void loadAllUsers() {
+    public void loadAllUsers() {
         System.out.println("Loading all users from database for admin...");
         txtSearchUser.setText("");
         try {
