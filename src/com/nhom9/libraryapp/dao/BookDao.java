@@ -11,9 +11,7 @@ import java.util.List;
 
 import com.nhom9.libraryapp.model.Book;
 
-/**
- * DAO class for managing Book data in the Sach table.
- */
+
 public class BookDao {
 
      /**

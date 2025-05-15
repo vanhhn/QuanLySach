@@ -53,8 +53,5 @@ public class ReportService {
         return stats;
     }
 
-    // Có thể tạo các phương thức riêng lẻ nếu cần lấy từng số liệu
-    // public int getTotalBookTitles() { ... }
-    // public int getTotalAvailableCopies() { ... }
-    // ...
+
 }

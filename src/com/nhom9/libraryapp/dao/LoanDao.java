@@ -1,4 +1,4 @@
-package com.nhom9.libraryapp.dao; // Sử dụng package của bạn
+package com.nhom9.libraryapp.dao; 
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nhom9.libraryapp.model.Loan;
-import com.nhom9.libraryapp.model.LoanDetail; // Import lớp mới
+import com.nhom9.libraryapp.model.LoanDetail;
 
 /**
  * DAO class for managing Loan data in the PhieuMuon table.
@@ -62,7 +62,7 @@ public class LoanDao {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, status);
-            // Cho phép set Date là null nếu cần (ví dụ rollback)
+            
             if (returnDate != null) {
                  pstmt.setDate(2, returnDate);
              } else {

@@ -2,6 +2,7 @@ package com.nhom9.libraryapp.ui.panel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -16,10 +17,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-import com.nhom9.libraryapp.dao.UserDao;
+
 import com.nhom9.libraryapp.model.User;
+import com.nhom9.libraryapp.service.AuthService; 
+import com.nhom9.libraryapp.ui.dialog.EditUserDialog; 
 
 /**
  * Panel quản lý người dùng dành cho Admin.
@@ -31,16 +35,13 @@ public class UserManagementPanel extends JPanel {
     private DefaultTableModel tableModel;
     private JButton btnEdit, btnDelete, btnRefresh;
     private JTextField txtSearchUser;
-    private UserDao userDao; // Tạm thời dùng DAO, nên có UserService
-    // private UserService userService;
+    private AuthService authService; // Sử dụng UserService
+    private User currentAdmin; // Nên truyền admin hiện tại vào để kiểm tra quyền
 
-    // Cần biết admin hiện tại là ai để tránh tự xóa/sửa mình (nếu cần)
-    // private User currentAdmin;
-
-    public UserManagementPanel(/* User currentAdmin */) {
+   
+    public UserManagementPanel() {
         // this.currentAdmin = currentAdmin;
-        this.userDao = new UserDao(); // Khởi tạo DAO
-        // this.userService = new UserService();
+        this.authService = new AuthService(); 
         setLayout(new BorderLayout(10, 10));
         initComponents();
         addEventListeners();
@@ -77,8 +78,8 @@ public class UserManagementPanel extends JPanel {
              @Override public boolean isCellEditable(int row, int column) { return false; }
              @Override
              public Class<?> getColumnClass(int columnIndex) {
-                 if (columnIndex == 0) return Integer.class;
-                 if (columnIndex == 5) return Timestamp.class;
+                 if (columnIndex == 0) return Integer.class; // ID
+                 if (columnIndex == 5) return Timestamp.class; // NgayTao
                  return String.class;
              }
         };
@@ -87,12 +88,12 @@ public class UserManagementPanel extends JPanel {
         userTable.setAutoCreateRowSorter(true);
 
          // Đặt độ rộng cột gợi ý
-         userTable.getColumnModel().getColumn(0).setPreferredWidth(40);  // ID
-         userTable.getColumnModel().getColumn(1).setPreferredWidth(150); // Họ tên
-         userTable.getColumnModel().getColumn(2).setPreferredWidth(200); // Email
-         userTable.getColumnModel().getColumn(3).setPreferredWidth(120); // Tên ĐN
-         userTable.getColumnModel().getColumn(4).setPreferredWidth(70);  // Vai trò
-         userTable.getColumnModel().getColumn(5).setPreferredWidth(130); // Ngày tạo
+         userTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+         userTable.getColumnModel().getColumn(1).setPreferredWidth(150);
+         userTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+         userTable.getColumnModel().getColumn(3).setPreferredWidth(120);
+         userTable.getColumnModel().getColumn(4).setPreferredWidth(70);
+         userTable.getColumnModel().getColumn(5).setPreferredWidth(130);
 
         JScrollPane scrollPane = new JScrollPane(userTable);
         add(scrollPane, BorderLayout.CENTER);
@@ -110,43 +111,37 @@ public class UserManagementPanel extends JPanel {
         });
      }
 
-     // Cập nhật trạng thái nút Edit/Delete
      private void updateButtonStates() {
           int selectedRow = userTable.getSelectedRow();
           boolean rowSelected = selectedRow != -1;
-          boolean canEdit = rowSelected;
-          boolean canDelete = rowSelected;
+          btnEdit.setEnabled(rowSelected);
+          btnDelete.setEnabled(rowSelected);
 
           if (rowSelected) {
               int modelRow = userTable.convertRowIndexToModel(selectedRow);
               String role = (String) tableModel.getValueAt(modelRow, 4);
-              // int userId = (int) tableModel.getValueAt(modelRow, 0);
+              int userId = (int) tableModel.getValueAt(modelRow, 0);
 
               // Không cho xóa admin
               if ("admin".equalsIgnoreCase(role)) {
-                  canDelete = false;
+                  btnDelete.setEnabled(false);
               }
-              // Không cho sửa admin? (Tùy yêu cầu)
-              // if ("admin".equalsIgnoreCase(role)) {
-              //     canEdit = false;
+              // Không cho sửa admin (nếu không phải là chính mình - tùy logic)
+              // if ("admin".equalsIgnoreCase(role) && (currentAdmin == null || userId != currentAdmin.getId())) {
+              //    btnEdit.setEnabled(false);
               // }
-
-              // Tùy chọn: Không cho admin tự xóa/sửa mình
+              // Không cho admin tự xóa mình
               // if (currentAdmin != null && userId == currentAdmin.getId()) {
-              //     canEdit = false;
-              //     canDelete = false;
+              //    btnDelete.setEnabled(false);
               // }
           }
-          btnEdit.setEnabled(canEdit);
-          btnDelete.setEnabled(canDelete);
      }
 
     public void loadAllUsers() {
-        System.out.println("Loading all users from database for admin...");
+        System.out.println("UserManagementPanel: Loading all users...");
         txtSearchUser.setText("");
         try {
-            // Gọi DAO (hoặc Service nếu có)
-            List<User> users = userDao.getAllUsers();
+            List<User> users = authService.getAllUsers(); // Gọi qua UserService
             updateTable(users);
         } catch (Exception e) {
              handleDataLoadError("tải danh sách người dùng", e);
@@ -155,14 +150,13 @@ public class UserManagementPanel extends JPanel {
 
      private void searchUsers() {
         String searchTerm = txtSearchUser.getText().trim();
-         System.out.println("Admin searching for users: " + searchTerm);
+         System.out.println("UserManagementPanel: Admin searching for users: " + searchTerm);
          try {
-             // Cần phương thức tìm kiếm user trong DAO/Service
-             // List<User> users = userDao.searchUsers(searchTerm); // Ví dụ
-             // updateTable(users);
-             JOptionPane.showMessageDialog(this, "Chức năng tìm kiếm user chưa được cài đặt.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-             // Tạm thời tải lại tất cả
-             loadAllUsers();
+             List<User> users = authService.searchUsers(searchTerm); // Gọi qua UserService
+             updateTable(users);
+             if (users.isEmpty() && !searchTerm.isEmpty()) {
+                 JOptionPane.showMessageDialog(this, "Không tìm thấy người dùng nào khớp với '" + searchTerm + "'", "Thông báo Tìm Kiếm", JOptionPane.INFORMATION_MESSAGE);
+             }
          } catch (Exception e) {
              handleDataLoadError("tìm kiếm người dùng", e);
          }
@@ -170,30 +164,30 @@ public class UserManagementPanel extends JPanel {
 
      private void openEditUserDialog() {
          int selectedRow = userTable.getSelectedRow();
-         if (selectedRow == -1 || !btnEdit.isEnabled()) return; // Kiểm tra nút có được bật không
+         if (selectedRow == -1 || !btnEdit.isEnabled()) {
+             if(selectedRow == -1) JOptionPane.showMessageDialog(this, "Vui lòng chọn một người dùng để sửa.", "Chưa chọn", JOptionPane.INFORMATION_MESSAGE);
+             return;
+         }
 
          int modelRow = userTable.convertRowIndexToModel(selectedRow);
          int userId = (int) tableModel.getValueAt(modelRow, 0);
-         System.out.println("Opening Edit User Dialog for User ID: " + userId);
+         System.out.println("UserManagementPanel: Opening Edit User Dialog for User ID: " + userId);
 
          try {
-             // --- Lấy thông tin User đầy đủ từ DB ---
-             User userToEdit = userDao.getUserById(userId); // Hoặc userService.getUserById(userId);
-             // --------------------------------------
+             User userToEdit = authService.getUserById(userId);
              if(userToEdit == null){
                   JOptionPane.showMessageDialog(this, "Không tìm thấy người dùng với ID: " + userId, "Lỗi Dữ Liệu", JOptionPane.ERROR_MESSAGE);
                  return;
              }
 
-             // --- Cần một Dialog riêng để sửa User ---
-             // Ví dụ: EditUserDialog dialog = new EditUserDialog((Frame) SwingUtilities.getWindowAncestor(this), userToEdit);
-             // dialog.setVisible(true);
-             // if (dialog.isDataChanged()) {
-             //      loadAllUsers();
-             // }
-             // --------------------------------------
-             JOptionPane.showMessageDialog(this, "Chức năng sửa user đang được phát triển (Cần Dialog riêng).", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+          
 
+             EditUserDialog dialog = new EditUserDialog((Frame) SwingUtilities.getWindowAncestor(this), userToEdit, authService);
+             dialog.setVisible(true);
+
+             if (dialog.isDataChanged()) {
+                  loadAllUsers(); // Tải lại danh sách sau khi sửa
+             }
          } catch (Exception e) {
               System.err.println("Lỗi khi lấy thông tin user để sửa (ID: " + userId + "): " + e.getMessage());
               e.printStackTrace();
@@ -203,34 +197,35 @@ public class UserManagementPanel extends JPanel {
 
     private void deleteSelectedUser() {
         int selectedRow = userTable.getSelectedRow();
-        if (selectedRow == -1 || !btnDelete.isEnabled()) return; // Kiểm tra nút
+        if (selectedRow == -1 || !btnDelete.isEnabled()) {
+             if(selectedRow == -1) JOptionPane.showMessageDialog(this, "Vui lòng chọn một người dùng để xóa.", "Chưa chọn", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
 
         int modelRow = userTable.convertRowIndexToModel(selectedRow);
         int userId = (int) tableModel.getValueAt(modelRow, 0);
         String userName = (String) tableModel.getValueAt(modelRow, 1);
+        
 
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Bạn có chắc chắn muốn xóa người dùng:\n" + userName + " (ID: " + userId + ")?\n" +
-                "Hành động này sẽ xóa toàn bộ thông tin và lịch sử mượn của người dùng!",
+                "Bạn có chắc chắn muốn xóa người dùng:\n" + userName + " (ID: " + userId + ")?",
                 "Xác nhận Xóa Người dùng",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            System.out.println("Attempting to delete user with ID: " + userId);
+            System.out.println("UserManagementPanel: Attempting to delete user with ID: " + userId);
             try {
-                // --- Gọi UserDao (hoặc Service) để xóa user ---
-                boolean success = userDao.deleteUser(userId); // deleteUser đã throws SQLException
-                // -------------------------------------------
+                boolean success = authService.deleteUser(userId /*, currentAdmin */); // 
                 if (success) {
                      JOptionPane.showMessageDialog(this, "Xóa người dùng thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                      loadAllUsers();
                  } else {
-                     JOptionPane.showMessageDialog(this, "Xóa người dùng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                     String errorMessage = authService.getLastErrorMessage();
+                     JOptionPane.showMessageDialog(this, errorMessage != null ? errorMessage : "Xóa người dùng thất bại!", "Lỗi Xóa", JOptionPane.ERROR_MESSAGE);
                  }
             } catch (SQLException ex) {
-                 // Xử lý lỗi SQL (ví dụ: không thể xóa do ràng buộc nếu FK không là CASCADE)
-                 JOptionPane.showMessageDialog(this, "Lỗi CSDL khi xóa người dùng: " + ex.getMessage(), "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
+                 JOptionPane.showMessageDialog(this, "Lỗi CSDL khi xóa người dùng: " + ex.getMessage() + "\n(Người dùng này có thể đang có phiếu mượn chưa trả.)", "Lỗi CSDL", JOptionPane.ERROR_MESSAGE);
                  ex.printStackTrace();
             } catch (Exception ex) {
                  JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi hệ thống khi xóa người dùng: " + ex.getMessage(), "Lỗi Hệ Thống", JOptionPane.ERROR_MESSAGE);
@@ -239,7 +234,6 @@ public class UserManagementPanel extends JPanel {
         }
     }
 
-     // Cập nhật bảng user
     private void updateTable(List<User> users) {
         tableModel.setRowCount(0);
         if (users != null) {
@@ -250,21 +244,20 @@ public class UserManagementPanel extends JPanel {
                 row.add(user.getEmail());
                 row.add(user.getTenDangNhap());
                 row.add(user.getVaiTro());
-                row.add(user.getNgayTao()); // Timestamp
+                row.add(user.getNgayTao());
                 tableModel.addRow(row);
             }
         }
          if (userTable.getRowCount() > 0) {
             userTable.clearSelection();
          }
-         updateButtonStates(); // Cập nhật lại nút sau khi tải
+         updateButtonStates();
     }
 
-     // Xử lý lỗi tải dữ liệu chung
     private void handleDataLoadError(String actionDescription, Exception e) {
          System.err.println("Lỗi khi " + actionDescription + ": " + e.getMessage());
          e.printStackTrace();
          JOptionPane.showMessageDialog(this, "Không thể " + actionDescription + ".\nLỗi: " + e.getMessage(), "Lỗi Tải Dữ Liệu", JOptionPane.ERROR_MESSAGE);
-         updateTable(Collections.emptyList()); // Hiển thị bảng rỗng khi lỗi
+         updateTable(Collections.emptyList());
      }
 }

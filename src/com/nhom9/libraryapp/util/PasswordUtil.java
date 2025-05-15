@@ -2,7 +2,7 @@ package com.nhom9.libraryapp.util;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-//import at.favre.lib.crypto.bcrypt.BCrypt;
+
 
 /**
 * Lớp tiện ích cung cấp các hàm để mã hóa và kiểm tra mật khẩu sử dụng thuật toán BCrypt.
@@ -59,28 +59,5 @@ public class PasswordUtil {
      }
  }
 
- // // Phương thức main để chạy thử nghiệm (có thể xóa hoặc comment lại sau)
- // public static void main(String[] args) {
- //     String originalPassword = "mysecretpassword";
-
- //     // Mã hóa mật khẩu
- //     String hashedPassword = hashPassword(originalPassword);
- //     System.out.println("Original Password: " + originalPassword);
- //     System.out.println("Hashed Password:   " + hashedPassword);
- //     System.out.println("Hash length:       " + hashedPassword.length()); // Thường là 60 ký tự
-
- //     // Kiểm tra mật khẩu đúng
- //     boolean isPasswordCorrect = checkPassword(originalPassword, hashedPassword);
- //     System.out.println("Checking correct password ('" + originalPassword + "'): " + isPasswordCorrect); // Expected: true
-
- //     // Kiểm tra mật khẩu sai
- //     String wrongPassword = "wrongpassword";
- //     boolean isPasswordWrong = checkPassword(wrongPassword, hashedPassword);
- //     System.out.println("Checking wrong password ('" + wrongPassword + "'):   " + isPasswordWrong);   // Expected: false
-
- //     // Kiểm tra với hash không hợp lệ
- //     String invalidHash = "thisisnotavalidbcrypthash";
- //     boolean isHashInvalid = checkPassword(originalPassword, invalidHash);
- //     System.out.println("Checking invalid hash ('" + invalidHash + "'): " + isHashInvalid); // Expected: false
- // }
+ 
 }
