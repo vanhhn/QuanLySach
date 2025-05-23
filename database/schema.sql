@@ -39,7 +39,3 @@ CREATE TABLE PhieuMuon (
     INDEX idx_trang_thai (trang_thai)
 );
 
--- You might want to create an initial admin user
--- Remember to use a strong HASHED password in practice
--- INSERT INTO NguoiDung (ho_ten, email, ten_dang_nhap, mat_khau, vai_tro)
--- VALUES ('Adminstrator', 'admin@example.com', 'admin', 'hashed_password_here', 'admin');
