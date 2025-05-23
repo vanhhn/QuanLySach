@@ -39,7 +39,7 @@ public class MainUserFrame extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        UIUtil.setFrameIcon(this, "/icons/book.png", MainUserFrame.class); // Sử dụng MainUserFrame.class
+        UIUtil.setFrameIcon(this, "/icons/book.png", MainUserFrame.class); 
 
         initComponents();
         addEventListeners();
@@ -97,7 +97,7 @@ public class MainUserFrame extends JFrame {
                     historyPanel.loadHistory();
                 } else if (selectedComponent == searchBorrowPanel && searchBorrowPanel != null) {
                     System.out.println("User Tab: Tìm & Mượn Sách selected, reloading data...");
-                    searchBorrowPanel.refreshBookListView(); // Đảm bảo phương thức này public
+                    searchBorrowPanel.refreshBookListView(); 
                 }
             }
         });

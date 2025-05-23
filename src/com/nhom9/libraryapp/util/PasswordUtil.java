@@ -4,13 +4,9 @@ import org.mindrot.jbcrypt.BCrypt;
 
 
 
-/**
-* Lớp tiện ích cung cấp các hàm để mã hóa và kiểm tra mật khẩu sử dụng thuật toán BCrypt.
-*/
+
 public class PasswordUtil {
 
- // Số vòng lặp (log rounds) cho BCrypt. Giá trị càng cao càng an toàn nhưng càng chậm.
- // 10-12 là giá trị phổ biến và cân bằng giữa an toàn và hiệu năng.
  private static final int BCRYPT_WORKLOAD = 12;
 
  /**
@@ -40,19 +36,17 @@ public class PasswordUtil {
   */
  public static boolean checkPassword(String plainPassword, String hashedPassword) {
      if (plainPassword == null || plainPassword.isEmpty() || hashedPassword == null || hashedPassword.isEmpty()) {
-         // Không thể so sánh nếu một trong hai là rỗng
          return false;
      }
 
      try {
-         // BCrypt.checkpw() tự động trích xuất salt từ hashedPassword để so sánh
+         
          return BCrypt.checkpw(plainPassword, hashedPassword);
      } catch (IllegalArgumentException e) {
-         // Có thể xảy ra nếu hashedPassword không đúng định dạng BCrypt
          System.err.println("Lỗi khi kiểm tra mật khẩu: Định dạng hash không hợp lệ. " + e.getMessage());
          return false;
      } catch (Exception e) {
-         // Bắt các lỗi không mong muốn khác
+         
           System.err.println("Lỗi không xác định khi kiểm tra mật khẩu: " + e.getMessage());
           e.printStackTrace();
           return false;

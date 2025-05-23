@@ -12,9 +12,7 @@ import com.nhom9.libraryapp.model.Book;
 import com.nhom9.libraryapp.model.Loan;
 import com.nhom9.libraryapp.model.LoanDetail; // Import lớp mới
 
-/**
- * Lớp Service xử lý các nghiệp vụ chính của thư viện: Mượn, Trả, Tìm kiếm,...
- */
+
 public class LibraryService {
 
 	private BookDao bookDao;

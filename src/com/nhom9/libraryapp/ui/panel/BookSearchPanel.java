@@ -167,14 +167,12 @@ public class BookSearchPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Mượn sách '" + bookTitle + "' thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                     loadCurrentView(); // Làm mới panel hiện tại
 
-                    // THÔNG BÁO CHO MAINFRAME CẬP NHẬT CÁC TAB KHÁC
                     Window parentWindow = SwingUtilities.getWindowAncestor(this);
                     if (parentWindow instanceof MainAdminFrame) {
                         MainAdminFrame mainAdminFrame = (MainAdminFrame) parentWindow;
                         mainAdminFrame.refreshBorrowedBooksPanelData();
                         mainAdminFrame.refreshBorrowHistoryPanelData();
-                        // Admin cũng có thể cần làm mới Quản lý sách nếu số lượng tổng cũng thay đổi (ít xảy ra khi mượn)
-                        // mainAdminFrame.refreshBookManagementPanelData();
+                        
                     } else if (parentWindow instanceof MainUserFrame) {
                         MainUserFrame mainUserFrame = (MainUserFrame) parentWindow;
                         mainUserFrame.refreshBorrowedBooksPanelData();
@@ -182,7 +180,7 @@ public class BookSearchPanel extends JPanel {
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "Mượn sách thất bại! Sách có thể đã hết hoặc có lỗi xảy ra.", "Lỗi Mượn Sách", JOptionPane.ERROR_MESSAGE);
-                    loadCurrentView(); // Tải lại để đảm bảo UI nhất quán
+                    loadCurrentView(); 
                 }
             } catch (Exception e) {
                 System.err.println("Lỗi hệ thống khi mượn sách: " + e.getMessage());

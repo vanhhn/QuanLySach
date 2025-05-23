@@ -117,9 +117,9 @@ public class BorrowedBooksPanel extends JPanel {
                 boolean success = libraryService.returnBook(loanId);
                 if (success) {
                     JOptionPane.showMessageDialog(this, "Trả sách '" + bookTitle + "' thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                    loadBorrowedBooks(); // Tải lại panel hiện tại
+                    loadBorrowedBooks(); 
 
-                    // THÔNG BÁO CHO MAINFRAME CẬP NHẬT CÁC TAB KHÁC
+                    
                     Window parentWindow = SwingUtilities.getWindowAncestor(this);
                     if (parentWindow instanceof MainAdminFrame) {
                         MainAdminFrame mainAdminFrame = (MainAdminFrame) parentWindow;

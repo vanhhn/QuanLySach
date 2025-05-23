@@ -1,27 +1,22 @@
-package com.nhom9.libraryapp.model; // Hoặc package model của bạn
-
+package com.nhom9.libraryapp.model;
 import java.sql.Date;
 
-/**
- * Lớp chứa thông tin chi tiết của một phiếu mượn, bao gồm cả tên sách.
- * Có thể kế thừa Loan hoặc chứa các thuộc tính riêng.
- */
-public class LoanDetail extends Loan { // Kế thừa Loan để có sẵn các trường của Loan
 
-    private String bookTitle; // Thêm trường tên sách
+public class LoanDetail extends Loan { 
+
+    private String bookTitle; 
 
     // Constructors
     public LoanDetail() {
-        super(); // Gọi constructor của lớp cha (Loan)
+        super();
     }
 
-    // Constructor để dễ dàng tạo đối tượng từ dữ liệu lấy được (bao gồm cả tên sách)
+   
     public LoanDetail(int id, int userId, int bookId, Date ngayMuon, Date ngayTraDuKien, Date ngayTraThucTe, String trangThai, String bookTitle) {
-        super(id, userId, bookId, ngayMuon, ngayTraDuKien, ngayTraThucTe, trangThai); // Gọi constructor đầy đủ của Loan
+        super(id, userId, bookId, ngayMuon, ngayTraDuKien, ngayTraThucTe, trangThai); 
         this.bookTitle = bookTitle;
     }
 
-    // Getter and Setter cho bookTitle
     public String getBookTitle() {
         return bookTitle;
     }
@@ -32,9 +27,8 @@ public class LoanDetail extends Loan { // Kế thừa Loan để có sẵn các 
 
     @Override
     public String toString() {
-        // Ghi đè toString để bao gồm cả tên sách
         return "LoanDetail{" +
-               "loanInfo=" + super.toString() + // Lấy thông tin từ Loan.toString()
+               "loanInfo=" + super.toString() + 
                ", bookTitle='" + bookTitle + '\'' +
                '}';
     }

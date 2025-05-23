@@ -14,9 +14,9 @@ import com.nhom9.libraryapp.model.Book;
 
 public class BookDao {
 
-     /**
-     * Lấy sách theo ID.
-     */
+     
+     // Lấy sách theo ID.
+    
     public Book getBookById(int bookId) throws SQLException {
         String sql = "SELECT * FROM Sach WHERE id_sach = ?";
         Book book = null;
@@ -32,9 +32,8 @@ public class BookDao {
         return book;
     }
 
-     /**
-     * Lấy tất cả sách trong thư viện.
-     */
+     
+     //Lấy tất cả sách trong thư viện.
     public List<Book> getAllBooks() throws SQLException {
         String sql = "SELECT * FROM Sach ORDER BY ten_sach";
         List<Book> books = new ArrayList<>();
@@ -48,12 +47,11 @@ public class BookDao {
         return books;
     }
 
-    /**
-     * Tìm kiếm sách dựa trên tiêu chí (sử dụng LIKE cho tìm kiếm gần đúng).
-     */
+    
+     // Tìm kiếm sách dựa trên tiêu chí (sử dụng LIKE cho tìm kiếm gần đúng).
+     
     public List<Book> searchBooks(String title, String author, String genre) throws SQLException {
-        // Xây dựng câu lệnh SQL động một cách an toàn
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM Sach WHERE 1=1"); // Bắt đầu với điều kiện luôn đúng
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM Sach WHERE 1=1"); 
         List<Object> params = new ArrayList<>();
 
         if (title != null && !title.trim().isEmpty()) {
@@ -75,8 +73,6 @@ public class BookDao {
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // Set các tham số
             for (int i = 0; i < params.size(); i++) {
                 pstmt.setObject(i + 1, params.get(i));
             }
@@ -90,9 +86,9 @@ public class BookDao {
         return books;
     }
 
-    /**
-     * Thêm sách mới.
-     */
+    
+     //Thêm sách mới.
+     
     public boolean addBook(Book book) throws SQLException {
         String sql = "INSERT INTO Sach (ten_sach, tac_gia, the_loai, so_luong_tong, so_luong_con_lai) VALUES (?, ?, ?, ?, ?)";
         int rowsAffected = 0;
@@ -108,9 +104,8 @@ public class BookDao {
         return rowsAffected > 0;
     }
 
-    /**
-     * Cập nhật thông tin sách.
-     */
+     // Cập nhật thông tin sách.
+    
     public boolean updateBook(Book book) throws SQLException {
         String sql = "UPDATE Sach SET ten_sach = ?, tac_gia = ?, the_loai = ?, so_luong_tong = ?, so_luong_con_lai = ? WHERE id_sach = ?";
         int rowsAffected = 0;
@@ -149,11 +144,8 @@ public class BookDao {
         // Cần kiểm tra kỹ hơn ở tầng Service nếu muốn phân biệt rõ.
         return rowsAffected > 0;
     }
-
-
-    /**
-     * Xóa sách.
-     */
+     // Xóa sách.
+    
     public boolean deleteBook(int bookId) throws SQLException {
         String sql = "DELETE FROM Sach WHERE id_sach = ?";
         int rowsAffected = 0;

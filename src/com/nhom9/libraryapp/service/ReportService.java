@@ -10,9 +10,7 @@ import com.nhom9.libraryapp.dao.BookDao;
 import com.nhom9.libraryapp.dao.LoanDao;
 import com.nhom9.libraryapp.dao.UserDao;
 
-/**
- * Lớp Service xử lý việc lấy dữ liệu thống kê cho Admin.
- */
+
 public class ReportService {
 
     private BookDao bookDao;

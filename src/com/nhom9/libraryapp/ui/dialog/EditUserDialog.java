@@ -25,7 +25,7 @@ import com.nhom9.libraryapp.service.AuthService; // Sử dụng UserService
 public class EditUserDialog extends JDialog {
     private JTextField txtHoTen;
     private JTextField txtEmail;
-    private JTextField txtTenDangNhap; // Thường không cho sửa tên đăng nhập
+    private JTextField txtTenDangNhap; 
     private JComboBox<String> cbVaiTro;
     private JButton btnSave;
     private JButton btnCancel;
@@ -34,7 +34,6 @@ public class EditUserDialog extends JDialog {
     private AuthService authService;
     private boolean dataChanged = false;
 
-    // Regex cho Email (có thể dùng chung từ một lớp Util nếu muốn)
     private static final String EMAIL_REGEX =
             "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
             "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
@@ -43,7 +42,7 @@ public class EditUserDialog extends JDialog {
     public EditUserDialog(Frame owner, User userToEdit, AuthService authService) {
         super(owner, "Sửa thông tin người dùng", true);
         this.userToEdit = userToEdit;
-        this.authService = authService; // Nhận UserService từ bên ngoài
+        this.authService = authService; 
 
         initComponents();
         populateFields();

@@ -1,6 +1,6 @@
 package com.nhom9.libraryapp.ui.frame;
 
-import java.awt.Cursor; // Import Cursor
+import java.awt.Cursor; 
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -174,7 +174,7 @@ public class LoginFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 RegisterFrame registerFrame = new RegisterFrame(LoginFrame.this);
                 registerFrame.setVisible(true);
-                // setVisible(false); // Tùy chọn: ẩn frame đăng nhập
+                
             }
         });
     }

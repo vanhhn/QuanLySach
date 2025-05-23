@@ -18,7 +18,7 @@ public class User {
 		this.hoTen = hoTen;
 		this.email = email;
 		this.tenDangNhap = tenDangNhap;
-		this.matKhau = matKhau; // Mật khẩu sẽ được hash ở lớp Service/DAO
+		this.matKhau = matKhau; 
 		this.vaiTro = vaiTro;
 	}
 
@@ -27,7 +27,6 @@ public class User {
 		this.hoTen = hoTen;
 		this.email = email;
 		this.tenDangNhap = tenDangNhap;
-		// Không gán mật khẩu khi đọc từ DB để bảo mật
 		this.matKhau = null;
 		this.vaiTro = vaiTro;
 		this.ngayTao = ngayTao;

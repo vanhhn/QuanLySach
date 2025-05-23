@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AuthService { // Giữ tên AuthService nhưng giờ bao gồm cả quản lý User
+public class AuthService { 
 
     private UserDao userDao;
-    private String lastErrorMessage; // Để lưu thông báo lỗi từ service
+    private String lastErrorMessage; 
 
     // Regex cho Email
     private static final String EMAIL_REGEX =
@@ -21,7 +21,6 @@ public class AuthService { // Giữ tên AuthService nhưng giờ bao gồm cả
             "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
-    // Helper method kiểm tra mật khẩu
     private String getPasswordValidationError(String password) {
         if (password == null || password.isEmpty()) return "Mật khẩu không được để trống.";
         if (password.length() < 8) return "- Phải có ít nhất 8 ký tự.";
@@ -30,7 +29,7 @@ public class AuthService { // Giữ tên AuthService nhưng giờ bao gồm cả
         if (!Pattern.compile(".*[a-z].*").matcher(password).matches()) return "- Phải chứa ít nhất một chữ cái thường.";
         if (!Pattern.compile(".*[A-Z].*").matcher(password).matches()) return "- Phải chứa ít nhất một chữ cái hoa.";
         if (!Pattern.compile(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?~].*").matcher(password).matches()) return "- Phải chứa ít nhất một ký tự đặc biệt.";
-        return null; // Không có lỗi
+        return null; 
     }
 
     public AuthService() {
@@ -145,7 +144,7 @@ public class AuthService { // Giữ tên AuthService nhưng giờ bao gồm cả
         }
     }
 
-    // --- Chức năng Quản lý User (từ UserService cũ) ---
+    
     public List<User> getAllUsers() {
         setLastErrorMessage(null);
         try {
@@ -234,11 +233,7 @@ public class AuthService { // Giữ tên AuthService nhưng giờ bao gồm cả
                  return false;
             }
         }
-        // if (currentAdmin != null && currentAdmin.getId() == userId) {
-        //     setLastErrorMessage("Bạn không thể tự xóa tài khoản của mình.");
-        //     System.err.println(getLastErrorMessage());
-        //     return false;
-        // }
+     
         return userDao.deleteUser(userId);
     }
     
@@ -255,7 +250,6 @@ public class AuthService { // Giữ tên AuthService nhưng giờ bao gồm cả
         }
     }
 
-    // Chức năng này có thể trùng với register, nhưng giữ lại nếu logic khác biệt
     public boolean addUserByAdmin(User newUser) {
         setLastErrorMessage(null);
         if (newUser == null || newUser.getTenDangNhap() == null || newUser.getTenDangNhap().trim().isEmpty() ||

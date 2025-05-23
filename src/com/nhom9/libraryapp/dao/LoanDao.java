@@ -12,9 +12,7 @@ import java.util.List;
 import com.nhom9.libraryapp.model.Loan;
 import com.nhom9.libraryapp.model.LoanDetail;
 
-/**
- * DAO class for managing Loan data in the PhieuMuon table.
- */
+
 public class LoanDao {
 
     /**
@@ -28,7 +26,7 @@ public class LoanDao {
             pstmt.setInt(1, loanId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    loan = mapResultSetToLoan(rs); // Dùng map cơ bản
+                    loan = mapResultSetToLoan(rs); 
                 }
             }
         }
@@ -45,8 +43,8 @@ public class LoanDao {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, loan.getUserId());
             pstmt.setInt(2, loan.getBookId());
-            pstmt.setDate(3, loan.getNgayMuon()); // java.sql.Date
-            pstmt.setDate(4, loan.getNgayTraDuKien()); // java.sql.Date
+            pstmt.setDate(3, loan.getNgayMuon()); 
+            pstmt.setDate(4, loan.getNgayTraDuKien());
             pstmt.setString(5, loan.getTrangThai());
             rowsAffected = pstmt.executeUpdate();
         }
@@ -122,7 +120,6 @@ public class LoanDao {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                     // Sử dụng phương thức map mới để tạo LoanDetail
                     loans.add(mapResultSetToLoanDetail(rs));
                 }
             }

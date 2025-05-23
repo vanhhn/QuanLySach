@@ -216,7 +216,7 @@ public class UserManagementPanel extends JPanel {
         if (confirm == JOptionPane.YES_OPTION) {
             System.out.println("UserManagementPanel: Attempting to delete user with ID: " + userId);
             try {
-                boolean success = authService.deleteUser(userId /*, currentAdmin */); // 
+                boolean success = authService.deleteUser(userId ); 
                 if (success) {
                      JOptionPane.showMessageDialog(this, "Xóa người dùng thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                      loadAllUsers();

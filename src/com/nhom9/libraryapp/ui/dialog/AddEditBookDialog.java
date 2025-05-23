@@ -61,7 +61,6 @@ public class AddEditBookDialog extends JDialog {
         pack();
     }
 
-    // initComponents() giữ nguyên như trước
      private void initComponents() {
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -190,7 +189,6 @@ public class AddEditBookDialog extends JDialog {
         }
     }
 
-    // isDataChanged() giữ nguyên như trước
      public boolean isDataChanged() {
         return dataChanged;
     }

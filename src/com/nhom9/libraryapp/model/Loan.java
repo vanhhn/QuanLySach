@@ -4,12 +4,12 @@ import java.sql.Date;
 
 public class Loan {
 	private int id;
-	private int userId; // id của người mượn (tham chiếu NguoiDung)
-	private int bookId; // id của sách được mượn (tham chiếu Sach)
+	private int userId; 
+	private int bookId; 
 	private Date ngayMuon;
 	private Date ngayTraDuKien;
-	private Date ngayTraThucTe; // Có thể là null nếu chưa trả
-	private String trangThai; // 'đang mượn', 'đã trả', 'quá hạn'
+	private Date ngayTraThucTe; 
+	private String trangThai; 
 
 	public Loan() {
 	}
@@ -20,7 +20,7 @@ public class Loan {
 		this.ngayMuon = ngayMuon;
 		this.ngayTraDuKien = ngayTraDuKien;
 		this.trangThai = trangThai;
-		this.ngayTraThucTe = null; // Mặc định là null khi mới mượn
+		this.ngayTraThucTe = null; 
 	}
 
 	public Loan(int id, int userId, int bookId, Date ngayMuon, Date ngayTraDuKien, Date ngayTraThucTe,

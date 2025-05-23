@@ -83,8 +83,8 @@ public class RegisterFrame extends JFrame {
 
     private void loadIcons() {
         try {
-            URL openURL = getClass().getResource("/icons/view.png"); // Thay bằng tên file icon của bạn
-            URL closedURL = getClass().getResource("/icons/hide.png"); // Thay bằng tên file icon của bạn
+            URL openURL = getClass().getResource("/icons/view.png"); 
+            URL closedURL = getClass().getResource("/icons/hide.png");  
 
             if (openURL != null && closedURL != null) {
                 eyeOpenIcon = new ImageIcon(
@@ -93,7 +93,6 @@ public class RegisterFrame extends JFrame {
                         Toolkit.getDefaultToolkit().getImage(closedURL).getScaledInstance(16, 16, Image.SCALE_SMOOTH));
             } else {
                 System.err.println("Không tìm thấy file icon hiển thị/ẩn mật khẩu.");
-                // Để trống icon nếu không tải được
                 eyeOpenIcon = new ImageIcon();
                 eyeClosedIcon = new ImageIcon();
             }
@@ -115,7 +114,7 @@ public class RegisterFrame extends JFrame {
         lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 3; // Tăng gridwidth để bao gồm cả icon
+        gbc.gridwidth = 3; 
         gbc.weightx = 1.0;
         gbc.insets = new Insets(10, 10, 15, 10);
         mainPanel.add(lblTitle, gbc);

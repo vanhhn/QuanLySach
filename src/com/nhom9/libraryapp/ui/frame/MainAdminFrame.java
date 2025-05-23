@@ -120,7 +120,7 @@ public class MainAdminFrame extends JFrame {
                     userManagementPanel.loadAllUsers(); // Đảm bảo phương thức này public
                 } else if (selectedComponent == statisticsPanel && statisticsPanel != null) {
                     System.out.println("Admin Tab: Thống Kê selected, reloading data...");
-                    // statisticsPanel.loadStatistics(); // Nếu StatisticsPanel có phương thức public để tải lại
+                    
                 }
             }
         });

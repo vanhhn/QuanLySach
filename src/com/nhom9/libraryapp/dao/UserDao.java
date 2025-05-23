@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDao {
-
-    // --- mapResultSetToUser (Quan trọng - Giữ nguyên hoặc đảm bảo nó đúng) ---
     private User mapResultSetToUser(ResultSet rs, boolean includePassword) throws SQLException {
         User user = new User();
         user.setId(rs.getInt("id_nguoidung"));
@@ -31,7 +29,7 @@ public class UserDao {
             pstmt.setString(1, username);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    user = mapResultSetToUser(rs, true); // Lấy cả mật khẩu hash
+                    user = mapResultSetToUser(rs, true); 
                 }
             }
         }
@@ -46,7 +44,7 @@ public class UserDao {
             pstmt.setString(1, email);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    user = mapResultSetToUser(rs, false); // Không cần pass khi check email
+                    user = mapResultSetToUser(rs, false); 
                 }
             }
         }
@@ -61,7 +59,7 @@ public class UserDao {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    user = mapResultSetToUser(rs, true); // Lấy cả mật khẩu để Service giữ lại
+                    user = mapResultSetToUser(rs, true); 
                 }
             }
         }
@@ -75,7 +73,7 @@ public class UserDao {
             pstmt.setString(1, user.getHoTen());
             pstmt.setString(2, user.getEmail());
             pstmt.setString(3, user.getTenDangNhap());
-            pstmt.setString(4, user.getMatKhau()); // Mật khẩu đã hash
+            pstmt.setString(4, user.getMatKhau()); 
             pstmt.setString(5, user.getVaiTro());
             return pstmt.executeUpdate() > 0;
         }
@@ -85,10 +83,10 @@ public class UserDao {
         String sql = "SELECT * FROM NguoiDung ORDER BY ho_ten";
         List<User> users = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement(); // Có thể dùng PreparedStatement nếu an toàn hơn
+             Statement stmt = conn.createStatement(); 
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                users.add(mapResultSetToUser(rs, false)); // Không lấy mật khẩu cho danh sách
+                users.add(mapResultSetToUser(rs, false)); 
             }
         }
         return users;
@@ -99,18 +97,14 @@ public class UserDao {
      * Tên đăng nhập và mật khẩu không được thay đổi qua phương thức này.
      */
     public boolean updateUser(User user) throws SQLException {
-        // Chỉ cập nhật các trường được phép
         String sql = "UPDATE NguoiDung SET ho_ten = ?, email = ?, vai_tro = ? WHERE id_nguoidung = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, user.getHoTen());
             pstmt.setString(2, user.getEmail());
             pstmt.setString(3, user.getVaiTro());
-            // Mật khẩu không được cập nhật ở đây để tránh ghi đè mật khẩu đã hash
-            // bằng một giá trị null hoặc mật khẩu gốc nếu user object không chứa mật khẩu hash.
-            // Nếu UserService đã đặt mật khẩu hash cũ vào user, thì có thể thêm vào đây.
-            // pstmt.setString(4, user.getMatKhau()); // CHỈ NẾU user.getMatKhau() là mật khẩu đã hash
-            pstmt.setInt(4, user.getId()); // Điều kiện WHERE
+           
+            pstmt.setInt(4, user.getId()); 
             return pstmt.executeUpdate() > 0;
         }
     }
